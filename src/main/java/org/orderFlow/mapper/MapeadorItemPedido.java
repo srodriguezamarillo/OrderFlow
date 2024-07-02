@@ -1,92 +1,66 @@
 package org.orderFlow.mapper;
 
-import org.orderFlow.model.Facade;
 import org.orderFlow.model.ItemPedido;
-import org.orderFlow.persistence.Mapeador;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.orderFlow.repository.ItemPedidoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
- * Clase que mapea un ItemPedido a la base de datos.
+ * Servicio para la gestión de ItemPedido.
  */
-public class MapeadorItemPedido implements Mapeador {
+@Service
+public class MapeadorItemPedido {
 
-    private ItemPedido itemPedido;
-    private int oidServicio;
+    @Autowired
+    private ItemPedidoRepository itemPedidoRepository;
 
     /**
-     * Constructor que inicializa el mapeador con un itemPedido y un oidServicio.
+     * Guarda un nuevo ItemPedido en la base de datos.
      *
-     * @param itemPedido El itemPedido a mapear.
-     * @param oid El identificador del servicio asociado.
+     * @param itemPedido El ítem de pedido a guardar.
+     * @return El ítem de pedido guardado.
      */
-    public MapeadorItemPedido(ItemPedido itemPedido, int oid) {
-        this.itemPedido = itemPedido;
-        this.oidServicio = oid;
+    public ItemPedido save(ItemPedido itemPedido) {
+        return itemPedidoRepository.save(itemPedido);
     }
 
-    @Override
-    public int getOid() {
-        return itemPedido.getOid();
+    /**
+     * Actualiza un ItemPedido existente en la base de datos.
+     *
+     * @param itemPedido El ítem de pedido a actualizar.
+     * @return El ítem de pedido actualizado.
+     */
+    public ItemPedido update(ItemPedido itemPedido) {
+        return itemPedidoRepository.save(itemPedido);
     }
 
-    @Override
-    public void setOid(int oid) {
-        itemPedido.setOid(oid);
+    /**
+     * Elimina un ItemPedido de la base de datos.
+     *
+     * @param oid El ID del ítem de pedido a eliminar.
+     */
+    public void delete(int oid) {
+        itemPedidoRepository.deleteById(oid);
     }
 
-    @Override
-    public String getSqlInsertar() {
-        return "INSERT INTO itempedido (oid, oidServicio, oidProducto, estado, cantidad, descripcion, gestor, mozo, mesa, total) VALUES "
-                + "(" + getOid() + ", " + oidServicio + ", " + itemPedido.getProducto().getOid() + ", '"
-                + itemPedido.getEstado().toString() + "', " + itemPedido.getCantidad() + ", '" + itemPedido.getDescripcion() + "', '"
-                + itemPedido.getGestor().getUser() + "', '" + itemPedido.getMozo().getUser() + "', " + itemPedido.getMesa().getNumero() + ", "
-                + itemPedido.getTotal() + ")";
+    /**
+     * Encuentra un ItemPedido por su ID.
+     *
+     * @param oid El ID del ítem de pedido a encontrar.
+     * @return El ítem de pedido encontrado, o vacío si no se encuentra.
+     */
+    public Optional<ItemPedido> findById(int oid) {
+        return itemPedidoRepository.findById(oid);
     }
 
-    @Override
-    public String getSqlModificar() {
-        return "UPDATE itempedido SET estado ='" + itemPedido.getEstado().toString() + "', "
-                + "cantidad =" + itemPedido.getCantidad() + ", " + "descripcion ='" + itemPedido.getDescripcion() + "', "
-                + "gestor ='" + itemPedido.getGestor().getUser() + "', " + "mozo ='" + itemPedido.getMozo().getUser() + "', "
-                + "total =" + itemPedido.getTotal() + " WHERE oid=" + getOid();
-    }
-
-    @Override
-    public String getSqlBorrar() {
-        return "DELETE FROM itempedido WHERE oid=" + getOid();
-    }
-
-    @Override
-    public String getSqlRestaurar() {
-        return "SELECT * FROM itempedido WHERE oid=" + getOid();
-    }
-
-    @Override
-    public String getSqlSeleccionar() {
-        return "SELECT * FROM itempedido";
-    }
-
-    @Override
-    public void leer(ResultSet rs) throws SQLException {
-        setOid(rs.getInt("oid"));
-        itemPedido.setProducto(Facade.Instancia().buscarProducto(rs.getInt("oidProducto")));
-        itemPedido.setEstado(rs.getString("estado"));
-        itemPedido.setCantidad(rs.getInt("cantidad"));
-        itemPedido.setDescripcion(rs.getString("descripcion"));
-        itemPedido.setGestor(rs.getString("gestor"));
-        itemPedido.setMozo(rs.getString("mozo"));
-        itemPedido.setMesa(rs.getInt("mesa"));
-        itemPedido.setTotal(rs.getDouble("total"));
-    }
-
-    @Override
-    public void crearNuevo() {
-        itemPedido = new ItemPedido();
-    }
-
-    @Override
-    public Object getObject() {
-        return itemPedido;
+    /**
+     * Encuentra todos los ItemPedido.
+     *
+     * @return Una lista de todos los ítems de pedido.
+     */
+    public Iterable<ItemPedido> findAll() {
+        return itemPedidoRepository.findAll();
     }
 }
