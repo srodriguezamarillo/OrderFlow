@@ -1,79 +1,66 @@
 package org.orderFlow.mapper;
 
 import org.orderFlow.model.ClienteDeLaCasa;
-import org.orderFlow.model.SUsuarios;
-import org.orderFlow.persistence.Mapeador;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.orderFlow.repository.ClienteDeLaCasaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
- * Clase que mapea un ClienteDeLaCasa a la base de datos.
+ * Servicio para la gestión de ClienteDeLaCasa.
  */
-public class MapeadorClienteDeLaCasa implements Mapeador {
+@Service
+public class ClienteDeLaCasaService {
 
-    private ClienteDeLaCasa cliente;
+    @Autowired
+    private ClienteDeLaCasaRepository clienteDeLaCasaRepository;
 
     /**
-     * Constructor que inicializa el mapeador con un cliente.
+     * Guarda un nuevo ClienteDeLaCasa en la base de datos.
      *
-     * @param cliente El cliente a mapear.
+     * @param cliente El cliente a guardar.
+     * @return El cliente guardado.
      */
-    public MapeadorClienteDeLaCasa(ClienteDeLaCasa cliente) {
-        this.cliente = cliente;
+    public ClienteDeLaCasa save(ClienteDeLaCasa cliente) {
+        return clienteDeLaCasaRepository.save(cliente);
     }
 
-    @Override
-    public int getOid() {
-        return cliente.getOid();
+    /**
+     * Actualiza un ClienteDeLaCasa existente en la base de datos.
+     *
+     * @param cliente El cliente a actualizar.
+     * @return El cliente actualizado.
+     */
+    public ClienteDeLaCasa update(ClienteDeLaCasa cliente) {
+        return clienteDeLaCasaRepository.save(cliente);
     }
 
-    @Override
-    public void setOid(int oid) {
-        cliente.setOid(oid);
+    /**
+     * Elimina un ClienteDeLaCasa de la base de datos.
+     *
+     * @param oid El ID del cliente a eliminar.
+     */
+    public void delete(int oid) {
+        clienteDeLaCasaRepository.deleteById(oid);
     }
 
-    @Override
-    public String getSqlInsertar() {
-        return "INSERT INTO cliente (oid, id, nombre, email, tipo) VALUES ("
-                + getOid() + ", " + cliente.getId() + ", '" + cliente.getNombre() + "', '" + cliente.getEmail() + "', '"
-                + SUsuarios.TipoCliente.DELACASA.toString() + "')";
+    /**
+     * Encuentra un ClienteDeLaCasa por su ID.
+     *
+     * @param oid El ID del cliente a encontrar.
+     * @return El cliente encontrado, o vacío si no se encuentra.
+     */
+    public Optional<ClienteDeLaCasa> findById(int oid) {
+        return clienteDeLaCasaRepository.findById(oid);
     }
 
-    @Override
-    public String getSqlModificar() {
-        return "UPDATE cliente SET nombre = '" + cliente.getNombre() +
-                "', email = '" + cliente.getEmail() + "' WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlBorrar() {
-        return "DELETE FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlRestaurar() {
-        return "SELECT * FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlSeleccionar() {
-        return "SELECT * FROM cliente";
-    }
-
-    @Override
-    public void leer(ResultSet rs) throws SQLException {
-        setOid(rs.getInt("oid"));
-        cliente.setNombre(rs.getString("nombre"));
-        cliente.setEmail(rs.getString("email"));
-    }
-
-    @Override
-    public void crearNuevo() {
-        cliente = new ClienteDeLaCasa();
-    }
-
-    @Override
-    public Object getObject() {
-        return cliente;
+    /**
+     * Encuentra todos los ClienteDeLaCasa.
+     *
+     * @return Una lista de todos los clientes.
+     */
+    public Iterable<ClienteDeLaCasa> findAll() {
+        return clienteDeLaCasaRepository.findAll();
     }
 }
