@@ -11,7 +11,7 @@ import java.util.Optional;
  * Servicio para la gestión de ClienteDeLaCasa.
  */
 @Service
-public class ClienteDeLaCasaService {
+public class MapeadorClienteDeLaCasa {
 
     @Autowired
     private ClienteDeLaCasaRepository clienteDeLaCasaRepository;
