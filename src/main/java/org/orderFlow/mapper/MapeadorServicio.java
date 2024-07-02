@@ -1,84 +1,66 @@
 package org.orderFlow.mapper;
 
 import org.orderFlow.model.Servicio;
-import org.orderFlow.persistence.Mapeador;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.orderFlow.repository.ServicioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
- * Clase que mapea un Servicio a la base de datos.
+ * Servicio para la gestión de Servicio.
  */
-public class MapeadorServicio implements Mapeador {
+@Service
+public class MapeadorServicio {
 
-    private Servicio servicio;
+    @Autowired
+    private ServicioRepository servicioRepository;
 
     /**
-     * Constructor que inicializa el mapeador con un servicio.
+     * Guarda un nuevo Servicio en la base de datos.
      *
-     * @param servicio El servicio a mapear.
+     * @param servicio El servicio a guardar.
+     * @return El servicio guardado.
      */
-    public MapeadorServicio(Servicio servicio) {
-        this.servicio = servicio;
+    public Servicio save(Servicio servicio) {
+        return servicioRepository.save(servicio);
     }
 
-    @Override
-    public int getOid() {
-        return servicio.getOid();
+    /**
+     * Actualiza un Servicio existente en la base de datos.
+     *
+     * @param servicio El servicio a actualizar.
+     * @return El servicio actualizado.
+     */
+    public Servicio update(Servicio servicio) {
+        return servicioRepository.save(servicio);
     }
 
-    @Override
-    public void setOid(int oid) {
-        servicio.setOid(oid);
+    /**
+     * Elimina un Servicio de la base de datos.
+     *
+     * @param oid El ID del servicio a eliminar.
+     */
+    public void delete(int oid) {
+        servicioRepository.deleteById(oid);
     }
 
-    @Override
-    public String getSqlInsertar() {
-        if (servicio.getCliente() != null) {
-            return "INSERT INTO servicio (oid, total, oidCliente) VALUES "
-                    + "(" + getOid() + ", " + servicio.getTotal() + ", " +
-                    servicio.getCliente().getOid() + ")";
-        } else {
-            return "INSERT INTO servicio (oid, total) VALUES "
-                    + "(" + getOid() + ", " + servicio.getTotal() + ")";
-        }
+    /**
+     * Encuentra un Servicio por su ID.
+     *
+     * @param oid El ID del servicio a encontrar.
+     * @return El servicio encontrado, o vacío si no se encuentra.
+     */
+    public Optional<Servicio> findById(int oid) {
+        return servicioRepository.findById(oid);
     }
 
-    @Override
-    public String getSqlModificar() {
-        return "UPDATE servicio SET total = " + servicio.getTotal() + ", "
-                + "oidCliente = " + servicio.getCliente().getOid()
-                + " WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlBorrar() {
-        return "DELETE FROM servicio WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlRestaurar() {
-        return "SELECT * FROM servicio WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlSeleccionar() {
-        return "SELECT * FROM servicio";
-    }
-
-    @Override
-    public void leer(ResultSet rs) throws SQLException {
-        setOid(rs.getInt("oid"));
-        servicio.setTotal(rs.getDouble("total"));
-        servicio.getCliente().setOid(rs.getInt("oidCliente"));
-    }
-
-    @Override
-    public void crearNuevo() {
-        servicio = new Servicio();
-    }
-
-    @Override
-    public Object getObject() {
-        return servicio;
+    /**
+     * Encuentra todos los Servicios.
+     *
+     * @return Una lista de todos los servicios.
+     */
+    public Iterable<Servicio> findAll() {
+        return servicioRepository.findAll();
     }
 }
