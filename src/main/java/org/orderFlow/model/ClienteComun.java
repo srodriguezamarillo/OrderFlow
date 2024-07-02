@@ -1,7 +1,7 @@
 package org.orderFlow.model;
 
-import javax.persistence.Entity;
 import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.ArrayList;
 

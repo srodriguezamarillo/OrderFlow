@@ -1,15 +1,22 @@
 package org.orderFlow.mapper;
 
 import org.orderFlow.model.ClienteComun;
-import org.orderFlow.model.SUsuarios;
-import org.orderFlow.persistence.Mapeador;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.orderFlow.repository.ClienteComunRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Clase que mapea un ClienteComun a la base de datos.
+ * Servicio para la gestión de clientes comunes.
+ * Proporciona métodos para interactuar con la base de datos.
  */
-public class MapeadorClienteComun implements Mapeador {
+@Service
+public class MapeadorClienteComun {
+
+    @Autowired
+    private ClienteComunRepository clienteComunRepository;
 
     private ClienteComun cliente;
 
@@ -22,58 +29,76 @@ public class MapeadorClienteComun implements Mapeador {
         this.cliente = cliente;
     }
 
-    @Override
+    /**
+     * Guarda un cliente común en la base de datos.
+     *
+     * @return El cliente guardado.
+     */
+    public ClienteComun saveClienteComun() {
+        return clienteComunRepository.save(cliente);
+    }
+
+    /**
+     * Encuentra un cliente común por su ID.
+     *
+     * @param id El ID del cliente.
+     * @return El cliente, si se encuentra.
+     */
+    public Optional<ClienteComun> findClienteComunById(int id) {
+        return clienteComunRepository.findById(id);
+    }
+
+    /**
+     * Borra un cliente común por su ID.
+     *
+     * @param id El ID del cliente.
+     */
+    public void deleteClienteComunById(int id) {
+        clienteComunRepository.deleteById(id);
+    }
+
+    /**
+     * Devuelve todos los clientes comunes.
+     *
+     * @return Lista de clientes comunes.
+     */
+    public List<ClienteComun> findAllClientesComunes() {
+        return clienteComunRepository.findAll();
+    }
+
+    /**
+     * Obtiene el OID del cliente.
+     *
+     * @return El OID del cliente.
+     */
     public int getOid() {
         return cliente.getOid();
     }
 
-    @Override
+    /**
+     * Establece el OID del cliente.
+     *
+     * @param oid El OID a establecer.
+     */
     public void setOid(int oid) {
         cliente.setOid(oid);
     }
 
-    @Override
-    public String getSqlInsertar() {
-        return "INSERT INTO cliente (oid, id, nombre, email, tipo) VALUES ("
-                + getOid() + ", " + cliente.getId() + ", '" + cliente.getNombre() + "', '" + cliente.getEmail() + "', '"
-                + SUsuarios.TipoCliente.COMUN.toString() + "')";
-    }
-
-    @Override
-    public String getSqlModificar() {
-        return "UPDATE cliente SET nombre = '" + cliente.getNombre() +
-                "', email = '" + cliente.getEmail() + "' WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlBorrar() {
-        return "DELETE FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlRestaurar() {
-        return "SELECT * FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlSeleccionar() {
-        return "SELECT * FROM cliente";
-    }
-
-    @Override
-    public void leer(ResultSet rs) throws SQLException {
-        setOid(rs.getInt("oid"));
-        cliente.setNombre(rs.getString("nombre"));
-        cliente.setEmail(rs.getString("email"));
-    }
-
-    @Override
-    public void crearNuevo() {
-        cliente = new ClienteComun();
-    }
-
-    @Override
-    public Object getObject() {
+    /**
+     * Obtiene el cliente asociado a este mapeador.
+     *
+     * @return El cliente asociado.
+     */
+    public ClienteComun getCliente() {
         return cliente;
+    }
+
+    /**
+     * Establece el cliente para este mapeador.
+     *
+     * @param cliente El cliente a establecer.
+     */
+    public void setCliente(ClienteComun cliente) {
+        this.cliente = cliente;
     }
 }
