@@ -1,79 +1,66 @@
 package org.orderFlow.mapper;
 
 import org.orderFlow.model.ClientePreferencial;
-import org.orderFlow.model.SUsuarios;
-import org.orderFlow.persistence.Mapeador;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.orderFlow.repository.ClientePreferencialRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
- * Clase que mapea un ClientePreferencial a la base de datos.
+ * Servicio para la gestión de ClientePreferencial.
  */
-public class MapeadorClientePreferencial implements Mapeador {
+@Service
+public class MapeadorClientePreferencial {
 
-    private ClientePreferencial cliente;
+    @Autowired
+    private ClientePreferencialRepository clientePreferencialRepository;
 
     /**
-     * Constructor que inicializa el mapeador con un cliente.
+     * Guarda un nuevo ClientePreferencial en la base de datos.
      *
-     * @param cliente El cliente a mapear.
+     * @param cliente El cliente a guardar.
+     * @return El cliente guardado.
      */
-    public MapeadorClientePreferencial(ClientePreferencial cliente) {
-        this.cliente = cliente;
+    public ClientePreferencial save(ClientePreferencial cliente) {
+        return clientePreferencialRepository.save(cliente);
     }
 
-    @Override
-    public int getOid() {
-        return cliente.getOid();
+    /**
+     * Actualiza un ClientePreferencial existente en la base de datos.
+     *
+     * @param cliente El cliente a actualizar.
+     * @return El cliente actualizado.
+     */
+    public ClientePreferencial update(ClientePreferencial cliente) {
+        return clientePreferencialRepository.save(cliente);
     }
 
-    @Override
-    public void setOid(int oid) {
-        cliente.setOid(oid);
+    /**
+     * Elimina un ClientePreferencial de la base de datos.
+     *
+     * @param oid El ID del cliente a eliminar.
+     */
+    public void delete(int oid) {
+        clientePreferencialRepository.deleteById(oid);
     }
 
-    @Override
-    public String getSqlInsertar() {
-        return "INSERT INTO cliente (oid, id, nombre, email, tipo) VALUES ("
-                + getOid() + ", " + cliente.getId() + ", '" + cliente.getNombre() + "', '" + cliente.getEmail() + "', '"
-                + SUsuarios.TipoCliente.PREFERENCIAL.toString() + "')";
+    /**
+     * Encuentra un ClientePreferencial por su ID.
+     *
+     * @param oid El ID del cliente a encontrar.
+     * @return El cliente encontrado, o vacío si no se encuentra.
+     */
+    public Optional<ClientePreferencial> findById(int oid) {
+        return clientePreferencialRepository.findById(oid);
     }
 
-    @Override
-    public String getSqlModificar() {
-        return "UPDATE cliente SET nombre = '" + cliente.getNombre() +
-                "', email = '" + cliente.getEmail() + "' WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlBorrar() {
-        return "DELETE FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlRestaurar() {
-        return "SELECT * FROM cliente WHERE oid = " + getOid();
-    }
-
-    @Override
-    public String getSqlSeleccionar() {
-        return "SELECT * FROM cliente";
-    }
-
-    @Override
-    public void leer(ResultSet rs) throws SQLException {
-        setOid(rs.getInt("oid"));
-        cliente.setNombre(rs.getString("nombre"));
-        cliente.setEmail(rs.getString("email"));
-    }
-
-    @Override
-    public void crearNuevo() {
-        cliente = new ClientePreferencial();
-    }
-
-    @Override
-    public Object getObject() {
-        return cliente;
+    /**
+     * Encuentra todos los ClientePreferencial.
+     *
+     * @return Una lista de todos los clientes.
+     */
+    public Iterable<ClientePreferencial> findAll() {
+        return clientePreferencialRepository.findAll();
     }
 }
