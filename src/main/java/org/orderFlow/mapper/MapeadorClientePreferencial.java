@@ -9,6 +9,7 @@ import java.util.Optional;
 
 /**
  * Servicio para la gestión de ClientePreferencial.
+ * Proporciona métodos CRUD utilizando Spring Data JPA.
  */
 @Service
 public class MapeadorClientePreferencial {

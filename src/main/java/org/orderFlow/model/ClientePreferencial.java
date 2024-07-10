@@ -1,7 +1,5 @@
 package org.orderFlow.model;
 
-import org.orderFlow.persistence.Persistencia;
-import org.orderFlow.mapper.MapeadorClientePreferencial;
 import java.util.ArrayList;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -22,9 +20,6 @@ public class ClientePreferencial extends Cliente {
      */
     public ClientePreferencial(String nombre, String email) {
         super(nombre, email);
-        MapeadorClientePreferencial map = new MapeadorClientePreferencial(this);
-        Persistencia persistencia = Persistencia.Instancia();
-        persistencia.guardar(map);
     }
 
     /**
