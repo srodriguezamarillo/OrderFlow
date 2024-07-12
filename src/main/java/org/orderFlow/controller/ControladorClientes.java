@@ -1,25 +1,34 @@
 package org.orderFlow.controller;
 
-import org.orderFlow.model.Constantes;
-import org.orderFlow.model.Facade;
 import org.orderFlow.interfaces.IVistaClientes;
+import org.orderFlow.mapper.MapeadorClienteComun;
+import org.orderFlow.mapper.MapeadorClienteDeLaCasa;
+import org.orderFlow.mapper.MapeadorClientePreferencial;
+import org.orderFlow.model.ClienteComun;
+import org.orderFlow.model.ClienteDeLaCasa;
+import org.orderFlow.model.ClientePreferencial;
+import org.orderFlow.model.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 /**
  * Controlador para la gestión de clientes.
- * Se comunica con la vista y la fachada para registrar nuevos clientes.
+ * Se comunica con la vista y los mapeadores para registrar nuevos clientes.
  */
 @Controller
 public class ControladorClientes {
 
     private IVistaClientes vista;
 
-    /**
-     * Constructor que inicializa el controlador con la vista correspondiente.
-     *
-     * @param vista La interfaz de la vista de clientes.
-     */
+    @Autowired
+    private MapeadorClienteComun mapeadorClienteComun;
+
+    @Autowired
+    private MapeadorClienteDeLaCasa mapeadorClienteDeLaCasa;
+
+    @Autowired
+    private MapeadorClientePreferencial mapeadorClientePreferencial;
+
     @Autowired
     public ControladorClientes(IVistaClientes vista) {
         this.vista = vista;
@@ -33,7 +42,27 @@ public class ControladorClientes {
      * @param tipo Tipo de cliente (Común, Preferencial, De la Casa).
      */
     public void registrar(String nombre, String email, String tipo) {
-        boolean registrado = Facade.Instancia().registrarCliente(nombre, email, tipo);
+        boolean registrado = false;
+        switch (tipo.toUpperCase()) {
+            case "COMUN":
+                ClienteComun clienteComun = new ClienteComun(nombre, email);
+                mapeadorClienteComun.save(clienteComun);
+                registrado = true;
+                break;
+            case "DELACASA":
+                ClienteDeLaCasa clienteDeLaCasa = new ClienteDeLaCasa(nombre, email);
+                mapeadorClienteDeLaCasa.save(clienteDeLaCasa);
+                registrado = true;
+                break;
+            case "PREFERENCIAL":
+                ClientePreferencial clientePreferencial = new ClientePreferencial(nombre, email);
+                mapeadorClientePreferencial.save(clientePreferencial);
+                registrado = true;
+                break;
+            default:
+                registrado = false;
+                break;
+        }
         if (registrado) {
             vista.mostrarMensaje(Constantes.Msg_Cliente_Registrado);
         } else {
