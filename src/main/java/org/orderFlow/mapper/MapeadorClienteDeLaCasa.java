@@ -9,6 +9,10 @@ import java.util.Optional;
 
 /**
  * Servicio para la gestión de ClienteDeLaCasa.
+<<<<<<< HEAD
+=======
+ * Proporciona métodos CRUD utilizando Spring Data JPA.
+>>>>>>> a7a89cc (Reincorporando cambios desde el backup)
  */
 @Service
 public class MapeadorClienteDeLaCasa {
