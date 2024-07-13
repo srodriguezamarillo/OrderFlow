@@ -1,6 +1,6 @@
 package org.orderFlow.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import org.orderFlow.mapper.MapeadorProducto;
 import org.orderFlow.persistence.Persistencia;
 import org.orderFlow.model.UPP.TipoUnidadProcesadoraPedidos;

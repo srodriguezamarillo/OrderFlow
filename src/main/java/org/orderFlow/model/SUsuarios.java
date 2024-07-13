@@ -1,10 +1,13 @@
 package org.orderFlow.model;
 
-import org.orderFlow.persistence.Persistencia;
 import org.orderFlow.mapper.MapeadorClienteComun;
+import org.orderFlow.persistence.Persistencia;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 /**
  * Clase que gestiona los usuarios y clientes del sistema.
@@ -18,6 +21,9 @@ public class SUsuarios {
     private List<Usuario> logeados = new ArrayList<>();
     private List<ICliente> clientes = new ArrayList<>();
     Persistencia persistencia = Persistencia.Instancia();
+
+    @Autowired
+    private MapeadorClienteComun mapeadorClienteComun;
 
     /**
      * Crea un nuevo usuario en el sistema.
@@ -191,12 +197,8 @@ public class SUsuarios {
      * @return El cliente encontrado o null si no se encuentra.
      */
     public ICliente buscarCliente(int id) {
-        MapeadorClienteComun map = new MapeadorClienteComun(null);
-        List<Object> retorno = Persistencia.Instancia().buscar(map, "id = " + id);
-        if (retorno.size() == 1) {
-            return (ICliente) retorno.get(0);
-        }
-        return null;
+        Optional<ClienteComun> clienteComun = mapeadorClienteComun.findById(id);
+        return clienteComun.orElse(null);
     }
 
     /**

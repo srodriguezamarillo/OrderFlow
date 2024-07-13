@@ -5,6 +5,8 @@ import org.orderFlow.mapper.MapeadorItemPedido;
 import org.orderFlow.mapper.MapeadorProducto;
 import org.orderFlow.mapper.MapeadorServicio;
 import org.orderFlow.model.UPP.TipoUnidadProcesadoraPedidos;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +16,19 @@ import java.util.Observer;
 /**
  * Clase que gestiona las operaciones relacionadas con las mesas y los productos.
  */
+@Service
 public class SMesas extends Observable {
 
     private List<Mesa> mesas = new ArrayList<>();
     private List<Producto> productos = new ArrayList<>();
     private List<Observer> observadores = new ArrayList<>();
     Persistencia persistencia = Persistencia.Instancia();
+
+    @Autowired
+    private MapeadorServicio mapeadorServicio;
+
+    @Autowired
+    private MapeadorItemPedido mapeadorItemPedido;
 
     /**
      * Devuelve la lista de mesas.
@@ -127,12 +136,10 @@ public class SMesas extends Observable {
                 Servicio serv = mesa.getServicio();
                 List<ItemPedido> items = serv.getItems();
 
-                MapeadorServicio mapServ = new MapeadorServicio(serv);
-                persistencia.guardar(mapServ);
+                mapeadorServicio.save(serv);
 
                 for (ItemPedido item : items) {
-                    MapeadorItemPedido mapItem = new MapeadorItemPedido(item, serv.getOid());
-                    persistencia.guardar(mapItem);
+                    mapeadorItemPedido.save(item);
                 }
             }
             notificar();

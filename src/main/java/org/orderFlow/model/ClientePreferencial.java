@@ -1,8 +1,9 @@
 package org.orderFlow.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
 import java.util.ArrayList;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
 
 /**
  * Clase que representa a un cliente preferencial.

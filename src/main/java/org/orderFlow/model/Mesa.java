@@ -1,8 +1,6 @@
 package org.orderFlow.model;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 
 /**
  * Clase que representa una mesa en el restaurante.
